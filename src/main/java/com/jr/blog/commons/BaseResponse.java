@@ -48,6 +48,9 @@ public class BaseResponse<T> {
         this(code,data,"",description);
     }
 
+    public BaseResponse(ErrorCode errorCode,String description){
+        this(errorCode.getCode(),null,errorCode.getMessage(),description);
+    }
     public BaseResponse(ErrorCode errorCode){
         this(errorCode.getCode(),null,errorCode.getMessage(),errorCode.getDescription());
     }

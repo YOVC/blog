@@ -1,7 +1,7 @@
 package com.jr.blog.commons;
 
 /**
- * c错误码
+ * 错误码
  */
 public enum ErrorCode {
     SUCCESS(20000,"success", ""),

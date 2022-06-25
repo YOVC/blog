@@ -25,11 +25,15 @@ public class JWTUtils {
      * @return token
      */
     public static String getToken(Map<String,String> map){
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,7);         //默认令牌过期时间为7天
+        //1.builder创建
         JWTCreator.Builder builder = JWT.create();
-        map.forEach(builder::withClaim);          //将用户信息保存到token的payLoad中
-        builder.withExpiresAt(calendar.getTime());//设置Token有效期
+        //2.将用户信息保存到token的payLoad中
+        map.forEach(builder::withClaim);
+        //3.设置Token有效期,默认令牌过期时间为7天
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DATE,7);
+        builder.withExpiresAt(calendar.getTime());
+        //4.生成签名，返回token
         return builder.sign(Algorithm.HMAC256(SALT));
     }
 

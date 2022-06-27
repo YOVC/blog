@@ -3,8 +3,6 @@ package com.jr.blog.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.jr.blog.commons.JWTUtils;
-import com.jr.blog.commons.ResultUtils;
-import com.jr.blog.commons.UserHolder;
 import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.entity.User;
 import com.jr.blog.exception.BusinessException;
@@ -34,16 +32,16 @@ public class UserServiceImpl implements IUserService {
     private static final String SALT = "www.yyds.com";
 
     @Override
-    public String login(String username, String password) {
+    public String login(String userName, String password) {
         //1.验证参数格式是否正确
-        if (StrUtil.hasBlank(username,password)){
+        if (StrUtil.hasBlank(userName,password)){
             throw new BusinessException(PARAMS_ERROR,"账户或密码为空");
         }
-        if (StrUtil.hasBlank(username,password)){
+        if (StrUtil.hasBlank(userName,password)){
             throw new BusinessException(PARAMS_ERROR,"账户或密码为空");
         }
         //TODO 正则表达式判断用户账户
-        if (username.length() < 8){
+        if (userName.length() < 8){
             throw new BusinessException(PARAMS_ERROR,"账号长度过短");
         }
         //TODO 正则表达式判断用户密码
@@ -54,7 +52,7 @@ public class UserServiceImpl implements IUserService {
         //2.将用户输入密码进行加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + password).getBytes(StandardCharsets.UTF_8));
         //3.从数据库中查询用户
-        User user = userMapper.searchByUserName(username,encryptPassword);
+        User user = userMapper.search(userName,encryptPassword);
         if(user == null){
             throw new BusinessException(NULL_DATA,"用户不存在，账号或密码错误");
         }
@@ -74,6 +72,47 @@ public class UserServiceImpl implements IUserService {
         userMap.put("role",safeUser.getRole().toString());
 
         return JWTUtils.getToken(userMap);
+    }
+
+    @Override
+    public void register(String userName, String password, String checkPassword) {
+        //1.验证参数格式是否正确
+        if (StrUtil.hasBlank(userName,password)){
+            throw new BusinessException(PARAMS_ERROR,"账户或密码为空");
+        }
+        if (StrUtil.hasBlank(userName,password)){
+            throw new BusinessException(PARAMS_ERROR,"账户或密码为空");
+        }
+        //TODO 正则表达式判断用户账户
+        if (userName.length() < 8){
+            throw new BusinessException(PARAMS_ERROR,"账号长度过短");
+        }
+        //TODO 正则表达式判断用户密码
+        if(password.length() < 8){
+            throw new BusinessException(PARAMS_ERROR,"密码长度过短");
+        }
+
+        if(!password.equals(checkPassword)){
+           throw new BusinessException(PARAMS_ERROR,"密码与校验密码不一致");
+        }
+
+        //2.根据账号查询用户，禁止账号重复
+        User user = userMapper.searchByUserName(userName);
+        if(user != null){
+            throw new BusinessException(40002,"账号已存在","");
+        }
+
+        //3.密码加密
+        String encryptPassword = DigestUtils.md5DigestAsHex((SALT + password).getBytes(StandardCharsets.UTF_8));
+
+        //4.保存用户信息
+        User initUser = new User();
+        initUser.setUserName(userName);
+        initUser.setPassword(encryptPassword);
+        int result = userMapper.saveUser(initUser);
+        if (result == 0) {
+            throw new BusinessException(40003, "用户注册失败", "");
+        }
     }
 
 

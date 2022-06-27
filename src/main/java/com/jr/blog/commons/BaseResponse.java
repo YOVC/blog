@@ -2,6 +2,8 @@ package com.jr.blog.commons;
 
 import lombok.Data;
 
+import javax.management.openmbean.TabularData;
+
 /**
  * 通用返回类
  * @param <T> 返回数据的类型
@@ -47,6 +49,7 @@ public class BaseResponse<T> {
     public BaseResponse(int code, T data, String description) {
         this(code,data,"",description);
     }
+
 
     public BaseResponse(ErrorCode errorCode,String description){
         this(errorCode.getCode(),null,errorCode.getMessage(),description);

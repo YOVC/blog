@@ -11,9 +11,14 @@ public class ResultUtils {
      * @param <T>   返回数据的类型
      * @return  BaseResponse
      */
-    public static <T> BaseResponse<T> success(T data){
-        return new BaseResponse<T>(20000,data);
+    public static <T> BaseResponse<T> success(T data,String description){
+        return new BaseResponse<T>(20000,data,description);
     }
+
+    public static <T> BaseResponse<T> success(String description){
+        return new BaseResponse(20000,description);
+    }
+
 
     /**
      * 失败

@@ -6,7 +6,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 import java.util.Calendar;
-import java.util.GregorianCalendar;
 import java.util.Map;
 
 /**

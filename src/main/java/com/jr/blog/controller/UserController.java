@@ -4,8 +4,11 @@ import cn.hutool.core.util.StrUtil;
 import com.jr.blog.commons.BaseResponse;
 import com.jr.blog.commons.ResultUtils;
 import com.jr.blog.commons.dto.LoginFormDTO;
+import com.jr.blog.commons.dto.RegisterFormDTO;
 import com.jr.blog.exception.BusinessException;
 import com.jr.blog.service.IUserService;
+import org.apache.ibatis.jdbc.Null;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,24 +23,29 @@ public class UserController {
     @Resource
     private IUserService userService;
 
-    public BaseResponse<String> Login(@RequestBody LoginFormDTO loginFormDTO){
+    @PostMapping("/login")
+    public BaseResponse<String > Login(@RequestBody LoginFormDTO loginFormDTO){
         //1.验证参数格式是否正确
-        String username = loginFormDTO.getUserName();
+        String userName = loginFormDTO.getUserName();
         String password = loginFormDTO.getPassword();
-        if (StrUtil.hasBlank(username,password)){
+        if (StrUtil.hasBlank(userName,password)){
             throw new BusinessException(PARAMS_ERROR,"账户或密码为空");
         }
-        //TODO 正则表达式判断用户账户
-        if (username.length() < 8){
-            throw new BusinessException(PARAMS_ERROR,"账号长度过短");
-        }
-        //TODO 正则表达式判断用户密码
-        if(password.length() < 8){
-            throw new BusinessException(PARAMS_ERROR,"密码长度过短");
-        }
+        String token = userService.login(userName,password);
+        return ResultUtils.success(token,"登陆成功");
+    }
 
-        String token = userService.login(username,password);
-        return ResultUtils.success(token);
+    @PostMapping("/register")
+    public BaseResponse<Null> register(@RequestBody RegisterFormDTO registerFormDTO){
+        //1.验证参数格式是否正确
+        String userName = registerFormDTO.getUserName();
+        String password = registerFormDTO.getPassword();
+        String checkPassword = registerFormDTO.getCheckPassword();
+        if(StrUtil.hasBlank(userName,password,checkPassword)){
+            throw new BusinessException(PARAMS_ERROR,"账号或者密码为空");
+        }
+        userService.register(userName,password,checkPassword);
+        return ResultUtils.success("注册成功");
     }
 
 

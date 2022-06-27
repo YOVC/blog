@@ -1,8 +1,6 @@
 package com.jr.blog.commons;
 
 
-import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.jwt.JWT;
 import com.auth0.jwt.exceptions.AlgorithmMismatchException;
 import com.auth0.jwt.exceptions.InvalidClaimException;
 import com.auth0.jwt.exceptions.SignatureVerificationException;
@@ -11,7 +9,6 @@ import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.exception.BusinessException;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
@@ -23,6 +20,9 @@ public class LoginInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         //1.从请求头中获取token
         String token = request.getHeader("authorization");
+        if(token == null || token.isEmpty()){
+            throw new BusinessException(40105,"无token,用户未登陆","");
+        }
         //2.验证token
         DecodedJWT decodedJWT;
         try{

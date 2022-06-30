@@ -3,15 +3,14 @@ package com.jr.blog.controller;
 import cn.hutool.core.util.StrUtil;
 import com.jr.blog.commons.BaseResponse;
 import com.jr.blog.commons.ResultUtils;
+import com.jr.blog.commons.UserHolder;
 import com.jr.blog.commons.dto.LoginFormDTO;
 import com.jr.blog.commons.dto.RegisterFormDTO;
+import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.exception.BusinessException;
 import com.jr.blog.service.IUserService;
 import org.apache.ibatis.jdbc.Null;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
@@ -46,6 +45,23 @@ public class UserController {
         }
         userService.register(userName,password,checkPassword);
         return ResultUtils.success("注册成功");
+    }
+
+    /**
+     * 获取当前用户登录信息
+     * @return 用户信息
+     */
+    @GetMapping("/me")
+    public BaseResponse<SafeUser> me(){
+        return ResultUtils.success(UserHolder.getUser(),"获取成功");
+    }
+
+
+    @PostMapping("/updateUserInfo")
+    public BaseResponse<SafeUser> updateUserInfo(){
+
+
+        return null;
     }
 
 

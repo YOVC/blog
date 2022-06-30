@@ -2,6 +2,7 @@ package com.jr.blog.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
+import com.google.gson.Gson;
 import com.jr.blog.commons.JWTUtils;
 import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.entity.User;
@@ -60,18 +61,10 @@ public class UserServiceImpl implements IUserService {
         //4.生成token
         //4.1用户信息脱敏
         SafeUser safeUser = BeanUtil.copyProperties(user, SafeUser.class);
-        //4.2 用户对象转map
-        Map<String,String> userMap = new HashMap<>(8);
-        userMap.put("userId",safeUser.getUserId().toString());
-        userMap.put("userName", safeUser.getUserName());
-        userMap.put("nickName", safeUser.getNickName());
-        userMap.put("icon",safeUser.getIcon());
-        userMap.put("signature", safeUser.getSignature());
-        userMap.put("status", safeUser.getStatus().toString());
-        userMap.put("isDelete",safeUser.getIsDelete().toString());
-        userMap.put("role",safeUser.getRole().toString());
-
-        return JWTUtils.getToken(userMap);
+        //4.2 用户对象转为json
+        Gson gson = new Gson();
+        String userJson = gson.toJson(safeUser);
+        return JWTUtils.getToken(userJson);
     }
 
     @Override

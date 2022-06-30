@@ -20,14 +20,14 @@ public class JWTUtils {
 
     /**
      * 生成token
-     * @param map 需要保存的用户信息
+     * @param userJson 需要保存的用户信息
      * @return token
      */
-    public static String getToken(Map<String,String> map){
+    public static String getToken(String userJson){
         //1.builder创建
         JWTCreator.Builder builder = JWT.create();
         //2.将用户信息保存到token的payLoad中
-        map.forEach(builder::withClaim);
+        builder.withClaim("SafeUser",userJson);
         //3.设置Token有效期,默认令牌过期时间为7天
         Calendar calendar = Calendar.getInstance();
         calendar.add(Calendar.DATE,7);

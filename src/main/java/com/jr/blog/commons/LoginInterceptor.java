@@ -7,6 +7,8 @@ import com.auth0.jwt.exceptions.SignatureVerificationException;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.exception.BusinessException;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -37,8 +39,9 @@ public class LoginInterceptor implements HandlerInterceptor {
             throw new BusinessException(ErrorCode.INVALID_CLAIM);
         }
         //3. 将payload转换为SafeUser对象
-        Map<String, Claim> claims = decodedJWT.getClaims();
-        SafeUser safeUser = payLoadToUser(claims);
+        Claim cacheUser = decodedJWT.getClaim("SafeUser");
+        Gson gson = new Gson();
+        SafeUser safeUser = gson.fromJson((JsonElement) cacheUser, SafeUser.class);
         //4. 将用户信息保存到ThreadLocal中
         UserHolder.saveUser(safeUser);
         return true;
@@ -50,21 +53,4 @@ public class LoginInterceptor implements HandlerInterceptor {
     }
 
 
-    private SafeUser payLoadToUser(Map<String,Claim> map){
-        try {
-            SafeUser safeUser = SafeUser.class.newInstance();
-            safeUser.setUserId(map.get("userId").asInt());
-            safeUser.setNickName(map.get("userName").toString());
-            safeUser.setNickName(map.get("nickName").toString());
-            safeUser.setSignature(map.get("signature").toString());
-            safeUser.setRole(map.get("role").asInt());
-            safeUser.setStatus(map.get("status").asInt());
-            safeUser.setIcon(map.get("Icon").toString());
-            safeUser.setIsDelete(map.get("isDelete").asInt());
-            return safeUser;
-        } catch (Exception e) {
-          throw new BusinessException(50000,"反射创建对象错误","");
-        }
-
-    }
 }

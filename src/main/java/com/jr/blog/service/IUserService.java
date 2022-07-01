@@ -16,4 +16,11 @@ public interface IUserService {
      * @param checkPassword 校验密码
      */
     void register(String userName, String password, String checkPassword);
+
+    /**
+     * 修改用户签名和昵称
+     * @param nickName 昵称
+     * @param signature 个性签名
+     */
+    void updateUserInfo(String nickName, String signature);
 }

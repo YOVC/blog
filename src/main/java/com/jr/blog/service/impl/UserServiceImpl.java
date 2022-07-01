@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
 import com.jr.blog.commons.JWTUtils;
+import com.jr.blog.commons.UserHolder;
 import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.entity.User;
 import com.jr.blog.exception.BusinessException;
@@ -106,6 +107,17 @@ public class UserServiceImpl implements IUserService {
         if (result == 0) {
             throw new BusinessException(40003, "用户注册失败", "");
         }
+    }
+
+    @Override
+    public void updateUserInfo(String nickName, String signature) {
+        //1.获取当前登陆用户id
+        SafeUser safeUser = UserHolder.getUser();
+        Integer userId =safeUser.getUserId();
+        //2.修改用户信息
+        userMapper.updateUserInfo(userId,nickName,signature);
+        //3，修改保存在客户端的token
+
     }
 
 

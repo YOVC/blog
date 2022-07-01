@@ -7,7 +7,9 @@ import com.jr.blog.commons.UserHolder;
 import com.jr.blog.commons.dto.LoginFormDTO;
 import com.jr.blog.commons.dto.RegisterFormDTO;
 import com.jr.blog.commons.dto.SafeUser;
+import com.jr.blog.commons.dto.UserDTO;
 import com.jr.blog.exception.BusinessException;
+import com.jr.blog.exception.GlobalExceptionHandler;
 import com.jr.blog.service.IUserService;
 import org.apache.ibatis.jdbc.Null;
 import org.springframework.web.bind.annotation.*;
@@ -57,12 +59,24 @@ public class UserController {
     }
 
 
+    /**
+     * 修改个性签名和昵称
+     * @param userDTO 修改信息
+     * @return 成功与否
+     */
     @PostMapping("/updateUserInfo")
-    public BaseResponse<SafeUser> updateUserInfo(){
-
-
-        return null;
+    public BaseResponse<SafeUser> updateUserInfo(@RequestBody UserDTO userDTO){
+        String nickName = userDTO.getNickName();
+        String signature = userDTO.getSignature();
+        if(StrUtil.isAllBlank(nickName,signature)){
+            throw new BusinessException(PARAMS_ERROR,"修改失败，参数均为空");
+        }
+        userService.updateUserInfo(nickName,signature);
+        return ResultUtils.success("修改成功");
     }
+
+
+
 
 
 }

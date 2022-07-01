@@ -25,4 +25,12 @@ public interface IUserMapper {
      * @return 是否成功 1-成功  0-失败
      */
     int saveUser(@Param("user") User user);
+
+    /**
+     * 修改用户个性签名和昵称
+     * @Param userId 用户id
+     * @param nickName 个性签名
+     * @param signature 昵称
+     */
+    void updateUserInfo(@Param("userId") Integer  userId,@Param("nickname") String nickName, @Param("signature") String signature);
 }

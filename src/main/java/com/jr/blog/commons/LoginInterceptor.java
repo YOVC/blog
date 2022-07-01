@@ -41,7 +41,7 @@ public class LoginInterceptor implements HandlerInterceptor {
         //3. 将payload转换为SafeUser对象
         Claim cacheUser = decodedJWT.getClaim("SafeUser");
         Gson gson = new Gson();
-        SafeUser safeUser = gson.fromJson((JsonElement) cacheUser, SafeUser.class);
+        SafeUser safeUser = gson.fromJson(cacheUser.asString(), SafeUser.class);
         //4. 将用户信息保存到ThreadLocal中
         UserHolder.saveUser(safeUser);
         return true;

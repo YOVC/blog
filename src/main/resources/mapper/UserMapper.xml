@@ -1,18 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.jr.blog.mapper.IUserMapper">
+
     <insert id="saveUser" parameterType="com.jr.blog.entity.User">
         insert into tb_user(user_name,password) values (#{user.userName},#{user.password});
     </insert>
 
+
+
+    <update id="updateUserInfo">
+        update tb_user
+        <set>
+            <if test="nickname != null">
+                nick_name = #{nickname},
+            </if>
+            <if test="signature != null">
+                signature = #{signature}
+            </if>
+        </set>
+        where user_id = #{userId} and is_delete = 0;
+    </update>
+
     <select id="search"  resultType="com.jr.blog.entity.User">
-        select * from tb_user where user_name = #{userName} and password = #{password} and isDelete = 0;
+        select * from tb_user where user_name = #{userName} and password = #{password} and is_delete = 0;
     </select>
 
 
 
     <select id="searchByUserName" resultType="com.jr.blog.entity.User">
-        select * from tb_user where user_name = #{userName} and isDelete = 0;
+        select * from tb_user where user_name = #{userName} and is_delete = 0;
     </select>
 
 

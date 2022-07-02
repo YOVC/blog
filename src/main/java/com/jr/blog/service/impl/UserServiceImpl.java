@@ -3,30 +3,32 @@ package com.jr.blog.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.google.gson.Gson;
-import com.jr.blog.commons.JWTUtils;
-import com.jr.blog.commons.UserHolder;
+import com.jr.blog.commons.utils.JWTUtils;
+import com.jr.blog.commons.utils.UserHolder;
+import com.jr.blog.commons.constant.RedisConstants;
 import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.entity.User;
 import com.jr.blog.exception.BusinessException;
 import com.jr.blog.mapper.IUserMapper;
 import com.jr.blog.service.IUserService;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
-
-import static com.jr.blog.commons.ErrorCode.NULL_DATA;
-import static com.jr.blog.commons.ErrorCode.PARAMS_ERROR;
+import static com.jr.blog.commons.result.ErrorCode.NULL_DATA;
+import static com.jr.blog.commons.result.ErrorCode.PARAMS_ERROR;
 
 @Service
 public class UserServiceImpl implements IUserService {
     @Resource
     private IUserMapper userMapper;
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
 
     /**
      * 盐值 混淆密码
@@ -59,13 +61,17 @@ public class UserServiceImpl implements IUserService {
             throw new BusinessException(NULL_DATA,"用户不存在，账号或密码错误");
         }
 
-        //4.生成token
+        //4.将用户信息保存到Redis中
         //4.1用户信息脱敏
         SafeUser safeUser = BeanUtil.copyProperties(user, SafeUser.class);
         //4.2 用户对象转为json
         Gson gson = new Gson();
         String userJson = gson.toJson(safeUser);
-        return JWTUtils.getToken(userJson);
+        //4.3保存并设置有效期为7天
+        String key = RedisConstants.LOGIN_USER_KEY + safeUser.getUserId();
+        stringRedisTemplate.opsForValue().set(key,userJson);
+        stringRedisTemplate.expire(key, RedisConstants.LONG_USER_TTL, TimeUnit.DAYS);
+        return JWTUtils.getToken(safeUser.getUserId());
     }
 
     @Override
@@ -116,8 +122,17 @@ public class UserServiceImpl implements IUserService {
         Integer userId =safeUser.getUserId();
         //2.修改用户信息
         userMapper.updateUserInfo(userId,nickName,signature);
-        //3，修改保存在客户端的token
-
+        //3.修改redis和UserHolder中信息
+        if (nickName!=null && !nickName.isEmpty()){
+            safeUser.setNickName(nickName);
+        }
+        if (signature!=null && !signature.isEmpty()){
+            safeUser.setSignature(signature);
+        }
+        UserHolder.saveUser(safeUser);
+        String key = RedisConstants.LOGIN_USER_KEY + userId;
+        Gson gson = new Gson();
+        stringRedisTemplate.opsForValue().set(key,gson.toJson(safeUser));
     }
 
 

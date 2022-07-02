@@ -1,8 +1,8 @@
 package com.jr.blog.exception;
 
-import com.jr.blog.commons.BaseResponse;
-import com.jr.blog.commons.ErrorCode;
-import com.jr.blog.commons.ResultUtils;
+import com.jr.blog.commons.result.BaseResponse;
+import com.jr.blog.commons.result.ErrorCode;
+import com.jr.blog.commons.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

@@ -1,6 +1,6 @@
 package com.jr.blog.exception;
 
-import com.jr.blog.commons.ErrorCode;
+import com.jr.blog.commons.result.ErrorCode;
 
 /**
  * 自定义异常类

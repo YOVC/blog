@@ -10,6 +10,17 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+
+  redis:
+    host: 192.168.119.136
+    port: 6379
+    password: 123456
+    lettuce:
+      pool:
+        max-active: 10
+        max-idle: 10
+        min-idle: 1
+        time-between-eviction-runs: 10
 server:
   port: 8080
 mybatis-plus:
@@ -21,5 +32,4 @@ mybatis-plus:
       logic-delete-field: isDelete
       logic-delete-value: 1
       logic-not-delete-value: 0
-
 

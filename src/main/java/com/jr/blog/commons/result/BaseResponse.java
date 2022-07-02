@@ -1,8 +1,6 @@
-package com.jr.blog.commons;
+package com.jr.blog.commons.result;
 
 import lombok.Data;
-
-import javax.management.openmbean.TabularData;
 
 /**
  * 通用返回类

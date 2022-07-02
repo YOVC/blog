@@ -1,22 +1,21 @@
 package com.jr.blog.controller;
 
 import cn.hutool.core.util.StrUtil;
-import com.jr.blog.commons.BaseResponse;
-import com.jr.blog.commons.ResultUtils;
-import com.jr.blog.commons.UserHolder;
+import com.jr.blog.commons.result.BaseResponse;
+import com.jr.blog.commons.utils.ResultUtils;
+import com.jr.blog.commons.utils.UserHolder;
 import com.jr.blog.commons.dto.LoginFormDTO;
 import com.jr.blog.commons.dto.RegisterFormDTO;
 import com.jr.blog.commons.dto.SafeUser;
 import com.jr.blog.commons.dto.UserDTO;
 import com.jr.blog.exception.BusinessException;
-import com.jr.blog.exception.GlobalExceptionHandler;
 import com.jr.blog.service.IUserService;
 import org.apache.ibatis.jdbc.Null;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 
-import static com.jr.blog.commons.ErrorCode.PARAMS_ERROR;
+import static com.jr.blog.commons.result.ErrorCode.PARAMS_ERROR;
 
 @RestController
 @RequestMapping("/user")

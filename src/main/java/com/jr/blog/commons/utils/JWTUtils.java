@@ -1,4 +1,4 @@
-package com.jr.blog.commons;
+package com.jr.blog.commons.utils;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTCreator;
@@ -20,19 +20,15 @@ public class JWTUtils {
 
     /**
      * 生成token
-     * @param userJson 需要保存的用户信息
+     * @param userId 用户id
      * @return token
      */
-    public static String getToken(String userJson){
+    public static String getToken(Integer userId){
         //1.builder创建
         JWTCreator.Builder builder = JWT.create();
         //2.将用户信息保存到token的payLoad中
-        builder.withClaim("SafeUser",userJson);
-        //3.设置Token有效期,默认令牌过期时间为7天
-        Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DATE,7);
-        builder.withExpiresAt(calendar.getTime());
-        //4.生成签名，返回token
+        builder.withClaim("id",userId);
+        //3.生成签名，返回token
         return builder.sign(Algorithm.HMAC256(SALT));
     }
 

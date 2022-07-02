@@ -1,4 +1,4 @@
-package com.jr.blog.commons;
+package com.jr.blog.commons.utils;
 
 import com.jr.blog.commons.dto.SafeUser;
 

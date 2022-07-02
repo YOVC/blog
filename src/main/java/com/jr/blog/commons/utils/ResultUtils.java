@@ -1,4 +1,7 @@
-package com.jr.blog.commons;
+package com.jr.blog.commons.utils;
+
+import com.jr.blog.commons.result.BaseResponse;
+import com.jr.blog.commons.result.ErrorCode;
 
 /**
  *返回工具类
@@ -11,7 +14,7 @@ public class ResultUtils {
      * @param <T>   返回数据的类型
      * @return  BaseResponse
      */
-    public static <T> BaseResponse<T> success(T data,String description){
+    public static <T> BaseResponse<T> success(T data, String description){
         return new BaseResponse<T>(20000,data,description);
     }
 

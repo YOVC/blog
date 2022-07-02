@@ -1,4 +1,4 @@
-package com.jr.blog.commons;
+package com.jr.blog.commons.result;
 
 /**
  * 错误码

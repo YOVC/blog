@@ -32,5 +32,5 @@ public interface IUserMapper {
      * @param nickName 个性签名
      * @param signature 昵称
      */
-    void updateUserInfo(@Param("userId") Integer  userId,@Param("nickname") String nickName, @Param("signature") String signature);
+    void updateUserInfo(@Param("userId") Integer userId,@Param("nickname") String nickName, @Param("signature") String signature);
 }
